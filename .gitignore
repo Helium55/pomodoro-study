@@ -1,0 +1,5 @@
+node_modules/
+.superpowers/
+src-tauri/target/
+dist/
+*.log
