@@ -1,5 +1,25 @@
-node_modules/
+.DS_Store
+node_modules
 .superpowers/
+/build
+/.svelte-kit
+/package
+.env
+.env.*
+!.env.example
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Tauri / Rust
 src-tauri/target/
+src-tauri/Cargo.lock
+
+# Frontend
 dist/
+pnpm-debug.log*
 *.log
+
+# OS / Editor
+Thumbs.db
+.vscode/
+.idea/

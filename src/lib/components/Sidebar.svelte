@@ -1,0 +1,122 @@
+<script lang="ts">
+  import { page } from '$app/state'
+  import { resolve } from '$app/paths'
+  import { BarChart3, ListTodo, Palette, Settings, Timer } from '@lucide/svelte'
+
+  const items = [
+    { href: '/focus', label: 'FOCUS', icon: Timer },
+    { href: '/tasks', label: 'TASKS', icon: ListTodo },
+    { href: '/stats', label: 'STATS', icon: BarChart3 },
+    { href: '/theme', label: 'THEME', icon: Palette },
+    { href: '/settings', label: 'SETTINGS', icon: Settings }
+  ] as const
+</script>
+
+<aside class="sidebar">
+  <div class="brand">
+    <span class="mark"></span>
+    <strong>POMODORO<br />STUDY</strong>
+  </div>
+
+  <nav aria-label="Main navigation">
+    {#each items as item (item.href)}
+      {@const Icon = item.icon}
+      <a
+        href={resolve(item.href)}
+        class:active={page.url.pathname === item.href}
+        aria-current={page.url.pathname === item.href ? 'page' : undefined}
+      >
+        <Icon size={17} strokeWidth={2.4} />
+        <span>{item.label}</span>
+      </a>
+    {/each}
+  </nav>
+</aside>
+
+<style>
+  .sidebar {
+    width: 184px;
+    min-width: 184px;
+    height: 100vh;
+    border-right: 1px solid var(--color-border);
+    background: var(--color-bg);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .brand {
+    min-height: 92px;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px;
+    font-family: var(--font-display);
+    font-size: 15px;
+    line-height: 0.94;
+  }
+
+  .mark {
+    width: 13px;
+    height: 13px;
+    background: var(--color-accent);
+    box-shadow: var(--shadow-hard-sm);
+  }
+
+  nav {
+    display: flex;
+    flex-direction: column;
+    padding-top: 10px;
+  }
+
+  a {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-fg-muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    padding: 0 16px;
+    text-decoration: none;
+  }
+
+  a:hover,
+  a.active {
+    background: var(--color-accent);
+    color: var(--color-bg);
+  }
+
+  @media (width <= 760px) {
+    .sidebar {
+      width: 100%;
+      min-width: 0;
+      height: auto;
+      border-right: 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .brand {
+      min-height: 58px;
+    }
+
+    nav {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding-top: 0;
+    }
+
+    a {
+      justify-content: center;
+      min-height: 48px;
+      padding: 0;
+    }
+
+    a span {
+      display: none;
+    }
+  }
+</style>
