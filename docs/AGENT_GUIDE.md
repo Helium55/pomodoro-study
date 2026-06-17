@@ -16,6 +16,7 @@
 2. Add the field to `SettingsState`.
 3. Add a key in `KEY_MAP` in `settings.svelte.ts`.
 4. Add a control in `src/routes/settings/+page.svelte`.
+5. If the setting affects visible text, add copy in `src/lib/i18n.ts`.
 
 ### Add A Statistic
 
@@ -39,5 +40,7 @@
 4. Add a goal, add a task, select it, complete a focus; confirm task progress increments.
 5. Complete four focus sessions; confirm the next break is long.
 6. Switch theme; confirm Acid remains active and Synthwave is disabled as coming soon.
-7. Change settings; restart; confirm settings persist.
-8. Export JSON, reset data, import JSON; confirm data returns.
+7. Switch language between Simplified Chinese and English; confirm visible navigation and Settings copy changes.
+8. Click test sound in Settings; confirm a status message appears and packaged builds include `src-tauri/assets/ding.wav`.
+9. Change settings; restart; confirm settings persist.
+10. Export JSON, reset data, import JSON; confirm data returns.

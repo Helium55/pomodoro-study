@@ -3,7 +3,9 @@
   import { Plus } from '@lucide/svelte'
   import GoalCard from '../../lib/components/GoalCard.svelte'
   import TaskRow from '../../lib/components/TaskRow.svelte'
+  import { getCopy } from '../../lib/i18n'
   import { goals } from '../../lib/stores/goals.svelte'
+  import { settings } from '../../lib/stores/settings.svelte'
   import { tasks } from '../../lib/stores/tasks.svelte'
 
   let goalTitle = $state('')
@@ -11,6 +13,7 @@
   let taskTitle = $state('')
   let taskGoal = $state('')
   let estimatedPomos = $state(1)
+  const copy = $derived(getCopy(settings.state.language))
 
   onMount(() => {
     void goals.load()
@@ -32,58 +35,64 @@
 
 <section class="tasks-page">
   <header class="page-head">
-    <p class="eyebrow">TASKS</p>
-    <h1>Goals and task queue</h1>
+    <p class="eyebrow">{copy.tasks.eyebrow}</p>
+    <h1>{copy.tasks.title}</h1>
   </header>
 
   <div class="columns">
     <section class="pane">
       <header class="pane-head">
-        <h2>Goals</h2>
+        <h2>{copy.tasks.goals}</h2>
       </header>
-      <form class="form" onsubmit={(event) => {
-        event.preventDefault()
-        void addGoal()
-      }}>
-        <input bind:value={goalTitle} placeholder="Goal title" />
-        <input bind:value={goalDescription} placeholder="Description" />
-        <button type="submit" aria-label="Add goal">
+      <form
+        class="form"
+        onsubmit={(event) => {
+          event.preventDefault()
+          void addGoal()
+        }}
+      >
+        <input bind:value={goalTitle} placeholder={copy.tasks.goalTitle} />
+        <input bind:value={goalDescription} placeholder={copy.tasks.description} />
+        <button type="submit" aria-label={copy.tasks.addGoal}>
           <Plus size={17} />
-          <span>ADD</span>
+          <span>{copy.tasks.addGoal}</span>
         </button>
       </form>
       <div class="list">
         {#each goals.active as goal (goal.id)}
-          <GoalCard goal={goal} onArchive={(item) => goals.archive(item.id)} />
+          <GoalCard {goal} onArchive={(item) => goals.archive(item.id)} />
         {/each}
       </div>
     </section>
 
     <section class="pane">
       <header class="pane-head">
-        <h2>Tasks</h2>
+        <h2>{copy.tasks.tasks}</h2>
       </header>
-      <form class="form task-form" onsubmit={(event) => {
-        event.preventDefault()
-        void addTask()
-      }}>
-        <input bind:value={taskTitle} placeholder="Task title" />
+      <form
+        class="form task-form"
+        onsubmit={(event) => {
+          event.preventDefault()
+          void addTask()
+        }}
+      >
+        <input bind:value={taskTitle} placeholder={copy.tasks.taskTitle} />
         <select bind:value={taskGoal}>
-          <option value="">No goal</option>
+          <option value="">{copy.tasks.noGoal}</option>
           {#each goals.active as goal (goal.id)}
             <option value={goal.id}>{goal.title}</option>
           {/each}
         </select>
         <input bind:value={estimatedPomos} type="number" min="1" max="24" />
-        <button type="submit" aria-label="Add task">
+        <button type="submit" aria-label={copy.tasks.addTask}>
           <Plus size={17} />
-          <span>ADD</span>
+          <span>{copy.tasks.addTask}</span>
         </button>
       </form>
       <div class="list">
         {#each tasks.active as task (task.id)}
           <TaskRow
-            task={task}
+            {task}
             selected={tasks.selectedTaskId === task.id}
             onSelect={(item) => tasks.select(item.id)}
             onComplete={(item) => tasks.complete(item.id)}

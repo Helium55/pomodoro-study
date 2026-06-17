@@ -1,4 +1,5 @@
 import { browser } from '$app/environment'
+import { getCopy } from '../i18n'
 import { ipc } from '../ipc'
 import { settings } from './settings.svelte'
 import { tasks } from './tasks.svelte'
@@ -115,14 +116,17 @@ class TimerStore {
       await ipc.completePomodoro(this.currentPomodoro.id, this.durationSecs)
       this.completedFocuses += 1
       this.completeOverlay = settings.state.notifyFullscreen
+      const copy = getCopy(settings.state.language)
       if (settings.state.notifySystem) {
-        await ipc.notifySystem('Focus complete', 'Time for a break.')
+        await ipc
+          .notifySystem(copy.notifications.focusCompleteTitle, copy.notifications.focusCompleteBody)
+          .catch(() => undefined)
       }
       if (settings.state.notifySound) {
-        await ipc.notifySound(settings.state.notifySoundFile)
+        await ipc.notifySound(settings.state.notifySoundFile).catch(() => undefined)
       }
       if (settings.state.notifyTaskbar) {
-        await ipc.notifyTaskbarFlash()
+        await ipc.notifyTaskbarFlash().catch(() => undefined)
       }
       await tasks.load()
       this.startBreak()

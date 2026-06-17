@@ -1,13 +1,16 @@
 <script lang="ts">
   import { X } from '@lucide/svelte'
+  import { getCopy } from '../i18n'
+  import { settings } from '../stores/settings.svelte'
 
   let {
     open,
     onCancel,
-    onSubmit
+    onSubmit,
   }: { open: boolean; onCancel: () => void; onSubmit: (reason: string) => void } = $props()
 
   let reason = $state('')
+  const copy = $derived(getCopy(settings.state.language))
 
   function submit() {
     onSubmit(reason)
@@ -17,20 +20,23 @@
 
 {#if open}
   <div class="backdrop">
-    <form class="dialog" onsubmit={(event) => {
-      event.preventDefault()
-      submit()
-    }}>
+    <form
+      class="dialog"
+      onsubmit={(event) => {
+        event.preventDefault()
+        submit()
+      }}
+    >
       <header>
-        <h2>Interrupt</h2>
-        <button type="button" aria-label="Close" onclick={onCancel}>
+        <h2>{copy.dialog.interruptTitle}</h2>
+        <button type="button" aria-label={copy.dialog.close} onclick={onCancel}>
           <X size={18} />
         </button>
       </header>
-      <textarea bind:value={reason} placeholder="Reason"></textarea>
+      <textarea bind:value={reason} placeholder={copy.dialog.reason}></textarea>
       <div class="actions">
-        <button type="button" onclick={onCancel}>CANCEL</button>
-        <button class="primary" type="submit">SAVE</button>
+        <button type="button" onclick={onCancel}>{copy.dialog.cancel}</button>
+        <button class="primary" type="submit">{copy.dialog.save}</button>
       </div>
     </form>
   </div>

@@ -4,14 +4,21 @@
 
   let {
     label,
+    statusLabel,
     remainingSecs,
     progress,
-    status
-  }: { label: string; remainingSecs: number; progress: number; status: string } = $props()
+    status,
+  }: {
+    label: string
+    statusLabel: string
+    remainingSecs: number
+    progress: number
+    status: string
+  } = $props()
 </script>
 
 <section class="timer" class:paused={status === 'paused'}>
-  <div class="meta">{label} / {status.toUpperCase()}</div>
+  <div class="meta">{label} / {statusLabel}</div>
   <div class="digits">{formatSeconds(remainingSecs)}</div>
   <ProgressBar value={progress} total={14} />
 </section>

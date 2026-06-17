@@ -4,6 +4,7 @@
   import CompleteOverlay from '../../lib/components/CompleteOverlay.svelte'
   import InterruptDialog from '../../lib/components/InterruptDialog.svelte'
   import TimerDisplay from '../../lib/components/TimerDisplay.svelte'
+  import { getCopy } from '../../lib/i18n'
   import { formatHours } from '../../lib/time'
   import { ipc } from '../../lib/ipc'
   import { settings } from '../../lib/stores/settings.svelte'
@@ -13,6 +14,7 @@
 
   let interruptOpen = $state(false)
   let stats = $state<StatsSummary | null>(null)
+  const copy = $derived(getCopy(settings.state.language))
 
   onMount(() => {
     void refresh()
@@ -42,17 +44,17 @@
 <section class="focus-page">
   <header class="top">
     <div>
-      <p class="eyebrow">FOCUS</p>
-      <h1>{timer.label}</h1>
+      <p class="eyebrow">{copy.focus.eyebrow}</p>
+      <h1>{copy.timer.phase[timer.phase]}</h1>
     </div>
     <div class="session">
-      <span>TODAY</span>
+      <span>{copy.focus.today}</span>
       <strong>{stats?.today.pomos ?? 0}</strong>
     </div>
   </header>
 
   <div class="taskbar">
-    <label for="task-select">Current task</label>
+    <label for="task-select">{copy.focus.currentTask}</label>
     <select
       id="task-select"
       value={tasks.selectedTaskId ? String(tasks.selectedTaskId) : ''}
@@ -61,7 +63,7 @@
         tasks.select(value ? Number(value) : null)
       }}
     >
-      <option value="">No task</option>
+      <option value="">{copy.focus.noTask}</option>
       {#each tasks.active as task (task.id)}
         <option value={task.id}>{task.title}</option>
       {/each}
@@ -70,53 +72,58 @@
 
   <div class="timer-wrap">
     <TimerDisplay
-      label={timer.label}
+      label={copy.timer.phase[timer.phase]}
+      statusLabel={copy.timer.status[timer.status]}
       remainingSecs={timer.remainingSecs}
       progress={timer.progress}
       status={timer.status}
     />
   </div>
 
-  <div class="controls" aria-label="Timer controls">
+  <div class="controls" aria-label={copy.focus.controls}>
     <button class="primary" type="button" onclick={startOrResume}>
       <Play size={18} />
-      <span>{timer.status === 'paused' ? 'RESUME' : 'START'}</span>
+      <span>{timer.status === 'paused' ? copy.focus.resume : copy.focus.start}</span>
     </button>
     <button type="button" onclick={() => timer.pause()} disabled={timer.status !== 'running'}>
       <Pause size={18} />
-      <span>PAUSE</span>
+      <span>{copy.focus.pause}</span>
     </button>
     <button type="button" onclick={() => (interruptOpen = true)} disabled={timer.phase !== 'focus'}>
       <CircleStop size={18} />
-      <span>INTERRUPT</span>
+      <span>{copy.focus.interrupt}</span>
     </button>
     <button type="button" onclick={() => timer.finishPhase()} disabled={timer.status === 'idle'}>
       <SkipForward size={18} />
-      <span>SKIP</span>
+      <span>{copy.focus.skip}</span>
     </button>
     <button type="button" onclick={() => timer.reset()}>
       <RotateCcw size={18} />
-      <span>RESET</span>
+      <span>{copy.focus.reset}</span>
     </button>
   </div>
 
   <footer class="metrics">
     <div>
-      <span>Focus time</span>
+      <span>{copy.focus.focusTime}</span>
       <strong>{formatHours(stats?.today.focus_secs ?? 0)}</strong>
     </div>
     <div>
-      <span>Interrupts</span>
+      <span>{copy.focus.interrupts}</span>
       <strong>{stats?.today.interrupts ?? 0}</strong>
     </div>
     <div>
-      <span>Selected</span>
-      <strong>{tasks.selected?.title ?? 'No task'}</strong>
+      <span>{copy.focus.selected}</span>
+      <strong>{tasks.selected?.title ?? copy.focus.noTask}</strong>
     </div>
   </footer>
 </section>
 
-<InterruptDialog open={interruptOpen} onCancel={() => (interruptOpen = false)} onSubmit={saveInterrupt} />
+<InterruptDialog
+  open={interruptOpen}
+  onCancel={() => (interruptOpen = false)}
+  onSubmit={saveInterrupt}
+/>
 <CompleteOverlay show={timer.completeOverlay} onClose={() => (timer.completeOverlay = false)} />
 
 <style>

@@ -1,11 +1,14 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import ProgressBar from '../../lib/components/ProgressBar.svelte'
+  import { getCopy } from '../../lib/i18n'
   import { formatHours } from '../../lib/time'
   import { ipc } from '../../lib/ipc'
+  import { settings } from '../../lib/stores/settings.svelte'
   import type { StatsSummary } from '../../lib/types'
 
   let stats = $state<StatsSummary | null>(null)
+  const copy = $derived(getCopy(settings.state.language))
 
   onMount(() => {
     void load()
@@ -18,27 +21,27 @@
 
 <section class="stats-page">
   <header class="page-head">
-    <p class="eyebrow">STATS</p>
-    <h1>Study history</h1>
+    <p class="eyebrow">{copy.stats.eyebrow}</p>
+    <h1>{copy.stats.title}</h1>
   </header>
 
   <div class="cards">
     <div>
-      <span>Today pomodoros</span>
+      <span>{copy.stats.todayPomodoros}</span>
       <strong>{stats?.today.pomos ?? 0}</strong>
     </div>
     <div>
-      <span>Today focus</span>
+      <span>{copy.stats.todayFocus}</span>
       <strong>{formatHours(stats?.today.focus_secs ?? 0)}</strong>
     </div>
     <div>
-      <span>Streak</span>
+      <span>{copy.stats.streak}</span>
       <strong>{stats?.streak_days ?? 0}</strong>
     </div>
   </div>
 
   <section class="panel">
-    <h2>Last 7 days</h2>
+    <h2>{copy.stats.last7Days}</h2>
     <div class="bars">
       {#each stats?.last_7_days ?? [] as day (day.date)}
         <div class="bar-row">
@@ -52,7 +55,7 @@
 
   <section class="grid">
     <div class="panel">
-      <h2>By goal</h2>
+      <h2>{copy.stats.byGoal}</h2>
       {#each stats?.by_goal ?? [] as row (row.goal_id ?? row.goal_title)}
         <div class="line">
           <span>{row.goal_title}</span>
@@ -61,7 +64,7 @@
       {/each}
     </div>
     <div class="panel">
-      <h2>Interruptions</h2>
+      <h2>{copy.stats.interruptions}</h2>
       {#each stats?.top_interrupts ?? [] as row (row.reason)}
         <div class="line">
           <span>{row.reason}</span>

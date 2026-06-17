@@ -7,9 +7,10 @@ const DEFAULTS: &[(&str, &str)] = &[
     ("timer.long_break_secs", "900"),
     ("timer.long_break_every", "4"),
     ("timer.auto_continue", "false"),
+    ("language", "\"zh-CN\""),
     ("notify.system", "true"),
     ("notify.sound", "true"),
-    ("notify.sound_file", "\"ding.mp3\""),
+    ("notify.sound_file", "\"ding.wav\""),
     ("notify.fullscreen", "true"),
     ("notify.taskbar", "true"),
     ("theme", "\"acid\""),
@@ -38,7 +39,7 @@ mod tests {
             .lock()
             .query_row("SELECT count(*) FROM settings", [], |r| r.get(0))
             .unwrap();
-        assert_eq!(count, 11);
+        assert_eq!(count, 12);
     }
 
     #[test]
@@ -50,6 +51,34 @@ mod tests {
             .lock()
             .query_row("SELECT count(*) FROM settings", [], |r| r.get(0))
             .unwrap();
-        assert_eq!(count, 11);
+        assert_eq!(count, 12);
+    }
+
+    #[test]
+    fn seed_sets_default_language_to_simplified_chinese() {
+        let db = db::open_memory().unwrap();
+        seed_defaults(&db.lock()).unwrap();
+        let language: String = db
+            .lock()
+            .query_row("SELECT value FROM settings WHERE key='language'", [], |r| {
+                r.get(0)
+            })
+            .unwrap();
+        assert_eq!(language, "\"zh-CN\"");
+    }
+
+    #[test]
+    fn seed_sets_default_sound_to_bundled_wav() {
+        let db = db::open_memory().unwrap();
+        seed_defaults(&db.lock()).unwrap();
+        let sound_file: String = db
+            .lock()
+            .query_row(
+                "SELECT value FROM settings WHERE key='notify.sound_file'",
+                [],
+                |r| r.get(0),
+            )
+            .unwrap();
+        assert_eq!(sound_file, "\"ding.wav\"");
     }
 }

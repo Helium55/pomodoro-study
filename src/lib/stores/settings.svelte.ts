@@ -1,7 +1,9 @@
 import { ipc } from '../ipc'
+import { DEFAULT_LANGUAGE, normalizeLanguage } from '../i18n'
 import type { SettingsState } from '../types'
 
 const DEFAULTS: SettingsState = {
+  language: DEFAULT_LANGUAGE,
   workSecs: 1500,
   breakSecs: 300,
   longBreakSecs: 900,
@@ -9,13 +11,14 @@ const DEFAULTS: SettingsState = {
   autoContinue: false,
   notifySystem: true,
   notifySound: true,
-  notifySoundFile: 'ding.mp3',
+  notifySoundFile: 'ding.wav',
   notifyFullscreen: true,
   notifyTaskbar: true,
-  theme: 'acid'
+  theme: 'acid',
 }
 
 const KEY_MAP: Record<keyof SettingsState, string> = {
+  language: 'language',
   workSecs: 'timer.work_secs',
   breakSecs: 'timer.break_secs',
   longBreakSecs: 'timer.long_break_secs',
@@ -26,7 +29,7 @@ const KEY_MAP: Record<keyof SettingsState, string> = {
   notifySoundFile: 'notify.sound_file',
   notifyFullscreen: 'notify.fullscreen',
   notifyTaskbar: 'notify.taskbar',
-  theme: 'theme'
+  theme: 'theme',
 }
 
 function readSetting<T>(value: string | undefined, fallback: T): T {
@@ -44,22 +47,30 @@ class SettingsStore {
 
   async load() {
     const values = await ipc.getAllSettings()
+    this.state.language = normalizeLanguage(
+      readSetting(values[KEY_MAP.language], DEFAULTS.language),
+    )
     this.state.workSecs = Number(readSetting(values[KEY_MAP.workSecs], DEFAULTS.workSecs))
     this.state.breakSecs = Number(readSetting(values[KEY_MAP.breakSecs], DEFAULTS.breakSecs))
     this.state.longBreakSecs = Number(
-      readSetting(values[KEY_MAP.longBreakSecs], DEFAULTS.longBreakSecs)
+      readSetting(values[KEY_MAP.longBreakSecs], DEFAULTS.longBreakSecs),
     )
     this.state.longBreakEvery = Number(
-      readSetting(values[KEY_MAP.longBreakEvery], DEFAULTS.longBreakEvery)
+      readSetting(values[KEY_MAP.longBreakEvery], DEFAULTS.longBreakEvery),
     )
     this.state.autoContinue = Boolean(
-      readSetting(values[KEY_MAP.autoContinue], DEFAULTS.autoContinue)
+      readSetting(values[KEY_MAP.autoContinue], DEFAULTS.autoContinue),
     )
     this.state.notifySystem = Boolean(readSetting(values[KEY_MAP.notifySystem], true))
     this.state.notifySound = Boolean(readSetting(values[KEY_MAP.notifySound], true))
-    this.state.notifySoundFile = String(
-      readSetting(values[KEY_MAP.notifySoundFile], DEFAULTS.notifySoundFile)
+    const loadedSoundFile = String(
+      readSetting(values[KEY_MAP.notifySoundFile], DEFAULTS.notifySoundFile),
     )
+    this.state.notifySoundFile =
+      loadedSoundFile === 'ding.mp3' ? DEFAULTS.notifySoundFile : loadedSoundFile
+    if (loadedSoundFile !== this.state.notifySoundFile) {
+      await ipc.setSetting(KEY_MAP.notifySoundFile, JSON.stringify(this.state.notifySoundFile))
+    }
     this.state.notifyFullscreen = Boolean(readSetting(values[KEY_MAP.notifyFullscreen], true))
     this.state.notifyTaskbar = Boolean(readSetting(values[KEY_MAP.notifyTaskbar], true))
     this.state.theme = String(readSetting(values[KEY_MAP.theme], DEFAULTS.theme))

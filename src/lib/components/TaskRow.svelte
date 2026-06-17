@@ -1,5 +1,7 @@
 <script lang="ts">
   import { Check, Play, Trash2 } from '@lucide/svelte'
+  import { getCopy } from '../i18n'
+  import { settings } from '../stores/settings.svelte'
   import type { Task } from '../types'
   import ProgressBar from './ProgressBar.svelte'
 
@@ -8,7 +10,7 @@
     selected = false,
     onSelect,
     onComplete,
-    onDelete
+    onDelete,
   }: {
     task: Task
     selected?: boolean
@@ -18,10 +20,16 @@
   } = $props()
 
   const ratio = $derived(task.estimated_pomos > 0 ? task.completed_pomos / task.estimated_pomos : 0)
+  const copy = $derived(getCopy(settings.state.language))
 </script>
 
 <article class="row" class:selected>
-  <button class="square" type="button" onclick={() => onComplete(task)} aria-label="Complete task">
+  <button
+    class="square"
+    type="button"
+    onclick={() => onComplete(task)}
+    aria-label={copy.dialog.completeTask}
+  >
     <Check size={15} />
   </button>
   <button class="main" type="button" onclick={() => onSelect(task)}>
@@ -31,10 +39,20 @@
       {task.completed_pomos} / {task.estimated_pomos}
     </span>
   </button>
-  <button class="icon" type="button" onclick={() => onSelect(task)} aria-label="Select task">
+  <button
+    class="icon"
+    type="button"
+    onclick={() => onSelect(task)}
+    aria-label={copy.dialog.selectTask}
+  >
     <Play size={15} />
   </button>
-  <button class="icon" type="button" onclick={() => onDelete(task)} aria-label="Delete task">
+  <button
+    class="icon"
+    type="button"
+    onclick={() => onDelete(task)}
+    aria-label={copy.dialog.deleteTask}
+  >
     <Trash2 size={15} />
   </button>
 </article>

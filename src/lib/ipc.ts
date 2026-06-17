@@ -18,12 +18,13 @@ const defaults: Record<string, string> = {
   'timer.long_break_secs': '900',
   'timer.long_break_every': '4',
   'timer.auto_continue': 'false',
+  language: '"zh-CN"',
   'notify.system': 'true',
   'notify.sound': 'true',
-  'notify.sound_file': '"ding.mp3"',
+  'notify.sound_file': '"ding.wav"',
   'notify.fullscreen': 'true',
   'notify.taskbar': 'true',
-  theme: '"acid"'
+  theme: '"acid"',
 }
 
 const storageKey = 'pomodoro-study.memory-db'
@@ -45,7 +46,11 @@ function loadMemory(): MemoryDb {
     return { goals: [], tasks: [], pomodoros: [], interrupts: [], settings: { ...defaults } }
   }
   const parsed = JSON.parse(raw) as MemoryDb
-  return { ...parsed, settings: { ...defaults, ...parsed.settings } }
+  const settings = { ...defaults, ...parsed.settings }
+  if (settings['notify.sound_file'] === '"ding.mp3"') {
+    settings['notify.sound_file'] = defaults['notify.sound_file']
+  }
+  return { ...parsed, settings }
 }
 
 function saveMemory(db: MemoryDb) {
@@ -78,7 +83,7 @@ async function memoryInvoke<T>(command: string, args: CommandArgs): Promise<T> {
         color: (args.color as string | undefined) ?? null,
         status: 'active',
         created_at: nowMs(),
-        archived_at: null
+        archived_at: null,
       }
       db.goals.push(goal)
       save()
@@ -112,7 +117,7 @@ async function memoryInvoke<T>(command: string, args: CommandArgs): Promise<T> {
     case 'delete_goal': {
       db.goals = db.goals.filter((goal) => goal.id !== Number(args.id))
       db.tasks = db.tasks.map((task) =>
-        task.goal_id === Number(args.id) ? { ...task, goal_id: null } : task
+        task.goal_id === Number(args.id) ? { ...task, goal_id: null } : task,
       )
       save()
       return undefined as T
@@ -128,7 +133,7 @@ async function memoryInvoke<T>(command: string, args: CommandArgs): Promise<T> {
         created_at: nowMs(),
         done_at: null,
         sort_order: db.tasks.filter((item) => item.goal_id === goalId).length,
-        completed_pomos: 0
+        completed_pomos: 0,
       }
       db.tasks.push(task)
       save()
@@ -143,8 +148,8 @@ async function memoryInvoke<T>(command: string, args: CommandArgs): Promise<T> {
         .map((task) => ({
           ...task,
           completed_pomos: db.pomodoros.filter(
-            (pomo) => pomo.task_id === task.id && pomo.status === 'completed'
-          ).length
+            (pomo) => pomo.task_id === task.id && pomo.status === 'completed',
+          ).length,
         }))
         .sort((a, b) => a.sort_order - b.sort_order) as T
     }
@@ -193,7 +198,7 @@ async function memoryInvoke<T>(command: string, args: CommandArgs): Promise<T> {
         planned_secs: Number(args.plannedSecs),
         actual_secs: null,
         status: 'in_progress',
-        date_local: localDate()
+        date_local: localDate(),
       }
       db.pomodoros.push(pomo)
       save()
@@ -219,7 +224,7 @@ async function memoryInvoke<T>(command: string, args: CommandArgs): Promise<T> {
           id: nextId(db.interrupts),
           pomodoro_id: pomo.id,
           reason: (args.reason as string | undefined) ?? null,
-          occurred_at: nowMs()
+          occurred_at: nowMs(),
         })
         save()
       }
@@ -269,7 +274,7 @@ function buildMemoryStats(db: MemoryDb): StatsSummary {
     return {
       date: label,
       pomos: day.length,
-      focus_secs: day.reduce((sum, pomo) => sum + (pomo.actual_secs ?? 0), 0)
+      focus_secs: day.reduce((sum, pomo) => sum + (pomo.actual_secs ?? 0), 0),
     }
   })
 
@@ -279,7 +284,7 @@ function buildMemoryStats(db: MemoryDb): StatsSummary {
       goal_id: goal.id,
       goal_title: goal.title,
       pomos: rows.length,
-      focus_secs: rows.reduce((sum, pomo) => sum + (pomo.actual_secs ?? 0), 0)
+      focus_secs: rows.reduce((sum, pomo) => sum + (pomo.actual_secs ?? 0), 0),
     }
   })
 
@@ -293,12 +298,12 @@ function buildMemoryStats(db: MemoryDb): StatsSummary {
     today: {
       pomos: todayCompleted.length,
       focus_secs: todayCompleted.reduce((sum, pomo) => sum + (pomo.actual_secs ?? 0), 0),
-      interrupts: interruptsToday.length
+      interrupts: interruptsToday.length,
     },
     total: {
       pomos: completed.length,
       focus_secs: completed.reduce((sum, pomo) => sum + (pomo.actual_secs ?? 0), 0),
-      interrupts: db.interrupts.length
+      interrupts: db.interrupts.length,
     },
     streak_days: last_7_days.filter((day) => day.pomos > 0).length,
     last_7_days,
@@ -306,7 +311,7 @@ function buildMemoryStats(db: MemoryDb): StatsSummary {
     top_interrupts: Object.entries(reasonCounts)
       .map(([reason, count]) => ({ reason, count }))
       .sort((a, b) => b.count - a.count)
-      .slice(0, 5)
+      .slice(0, 5),
   }
 }
 
@@ -324,7 +329,7 @@ export const ipc = {
     call<Task[]>('list_tasks', { goalId, includeDone }),
   updateTask: (
     id: number,
-    patch: { title?: string; goalId?: number | null; estimatedPomos?: number }
+    patch: { title?: string; goalId?: number | null; estimatedPomos?: number },
   ) => call<void>('update_task', { id, ...patch }),
   completeTask: (id: number) => call<void>('complete_task', { id }),
   deleteTask: (id: number) => call<void>('delete_task', { id }),
@@ -346,5 +351,5 @@ export const ipc = {
   notifyTaskbarFlash: () => call<void>('notify_taskbar_flash'),
   exportData: () => call<string>('export_data'),
   importData: (jsonText: string) => call<void>('import_data', { jsonText }),
-  resetData: () => call<void>('reset_data')
+  resetData: () => call<void>('reset_data'),
 }

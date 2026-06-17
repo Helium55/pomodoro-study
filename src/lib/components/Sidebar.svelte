@@ -2,14 +2,18 @@
   import { page } from '$app/state'
   import { resolve } from '$app/paths'
   import { BarChart3, ListTodo, Palette, Settings, Timer } from '@lucide/svelte'
+  import { getCopy } from '../i18n'
+  import { settings } from '../stores/settings.svelte'
 
   const items = [
-    { href: '/focus', label: 'FOCUS', icon: Timer },
-    { href: '/tasks', label: 'TASKS', icon: ListTodo },
-    { href: '/stats', label: 'STATS', icon: BarChart3 },
-    { href: '/theme', label: 'THEME', icon: Palette },
-    { href: '/settings', label: 'SETTINGS', icon: Settings }
+    { href: '/focus', key: 'focus', icon: Timer },
+    { href: '/tasks', key: 'tasks', icon: ListTodo },
+    { href: '/stats', key: 'stats', icon: BarChart3 },
+    { href: '/theme', key: 'theme', icon: Palette },
+    { href: '/settings', key: 'settings', icon: Settings },
   ] as const
+
+  const copy = $derived(getCopy(settings.state.language))
 </script>
 
 <aside class="sidebar">
@@ -18,7 +22,7 @@
     <strong>POMODORO<br />STUDY</strong>
   </div>
 
-  <nav aria-label="Main navigation">
+  <nav aria-label={copy.nav.aria}>
     {#each items as item (item.href)}
       {@const Icon = item.icon}
       <a
@@ -27,7 +31,7 @@
         aria-current={page.url.pathname === item.href ? 'page' : undefined}
       >
         <Icon size={17} strokeWidth={2.4} />
-        <span>{item.label}</span>
+        <span>{copy.nav[item.key]}</span>
       </a>
     {/each}
   </nav>

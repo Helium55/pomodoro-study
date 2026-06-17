@@ -1,8 +1,11 @@
 <script lang="ts">
   import { Archive, Target } from '@lucide/svelte'
+  import { getCopy } from '../i18n'
+  import { settings } from '../stores/settings.svelte'
   import type { Goal } from '../types'
 
   let { goal, onArchive }: { goal: Goal; onArchive: (goal: Goal) => void } = $props()
+  const copy = $derived(getCopy(settings.state.language))
 </script>
 
 <article class="goal">
@@ -13,7 +16,7 @@
       <p>{goal.description}</p>
     {/if}
   </div>
-  <button type="button" onclick={() => onArchive(goal)} aria-label="Archive goal">
+  <button type="button" onclick={() => onArchive(goal)} aria-label={copy.dialog.archiveGoal}>
     <Archive size={16} />
   </button>
 </article>

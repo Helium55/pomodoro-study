@@ -72,7 +72,10 @@ export interface ThemeMeta {
   status: 'available' | 'coming-soon'
 }
 
+export type Language = 'zh-CN' | 'en'
+
 export interface SettingsState {
+  language: Language
   workSecs: number
   breakSecs: number
   longBreakSecs: number

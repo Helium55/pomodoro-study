@@ -1,14 +1,16 @@
 <script lang="ts">
-  import { listThemes, setTheme } from '../../themes/registry'
+  import { getCopy } from '../../lib/i18n'
   import { settings } from '../../lib/stores/settings.svelte'
+  import { listThemes, setTheme } from '../../themes/registry'
 
   const themes = listThemes()
+  const copy = $derived(getCopy(settings.state.language))
 </script>
 
 <section class="theme-page">
   <header class="page-head">
-    <p class="eyebrow">THEME</p>
-    <h1>Visual system</h1>
+    <p class="eyebrow">{copy.theme.eyebrow}</p>
+    <h1>{copy.theme.title}</h1>
   </header>
 
   <div class="themes">
@@ -24,7 +26,7 @@
       >
         <span class="swatch" style={`--preview:${theme.preview}`}></span>
         <strong>{theme.displayName}</strong>
-        <em>{theme.status === 'available' ? 'Available' : 'Coming soon'}</em>
+        <em>{theme.status === 'available' ? copy.theme.available : copy.theme.comingSoon}</em>
       </button>
     {/each}
   </div>

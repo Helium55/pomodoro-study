@@ -1,10 +1,15 @@
 <script lang="ts">
+  import { getCopy } from '../i18n'
+  import { settings } from '../stores/settings.svelte'
+
   let { show, onClose }: { show: boolean; onClose: () => void } = $props()
+
+  const copy = $derived(getCopy(settings.state.language))
 </script>
 
 {#if show}
   <div class="overlay" role="status">
-    <button type="button" onclick={onClose}>FOCUS COMPLETE</button>
+    <button type="button" onclick={onClose}>{copy.dialog.completeOverlay}</button>
   </div>
 {/if}
 

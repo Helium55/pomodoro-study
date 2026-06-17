@@ -26,6 +26,8 @@ Free-text interruptions attached to a pomodoro. Rows cascade when the pomodoro i
 
 Key-value table. Values are JSON strings so booleans, numbers, and strings round-trip cleanly.
 
+The persisted `language` setting is `"zh-CN"` or `"en"` and defaults to Simplified Chinese. The bundled notification sound defaults to `"ding.wav"`.
+
 ## Migrations
 
 Add new migrations as `src-tauri/src/db/migrations/000N_description.sql` and append the version to `MIGRATIONS` in `src-tauri/src/db/migrations.rs`. Do not edit an already released migration.
