@@ -12,7 +12,6 @@ vite.config.ts.timestamp-*
 
 # Tauri / Rust
 src-tauri/target/
-src-tauri/Cargo.lock
 
 # Frontend
 dist/
