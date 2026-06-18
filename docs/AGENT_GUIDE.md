@@ -7,6 +7,9 @@
 3. Treat completed `pomodoros` rows as historical facts.
 4. Migrations are append-only.
 5. Settings values are JSON-encoded strings.
+6. Keep Android platform behavior behind `src/lib/ipc.ts` or a focused platform helper.
+7. Do not commit Android signing keys, keystores, local signing properties, or signing passwords.
+8. Test phone portrait, phone landscape, tablet portrait, and tablet landscape before Android release.
 
 ## Common Tasks
 
@@ -44,3 +47,6 @@
 8. Click test sound in Settings; confirm a status message appears and packaged builds include `src-tauri/assets/ding.wav`.
 9. Change settings; restart; confirm settings persist.
 10. Export JSON, reset data, import JSON; confirm data returns.
+11. On phone portrait, confirm bottom navigation does not cover Settings data actions.
+12. On phone landscape, confirm the timer and controls fit above bottom navigation.
+13. On tablet landscape, confirm the side rail remains visible and the timer workspace has no horizontal overflow.
