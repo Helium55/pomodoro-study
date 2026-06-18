@@ -75,3 +75,23 @@ pub fn notify_taskbar_flash(window: Window) -> AppResult<()> {
         .map_err(|err| AppError::Other(err.to_string()))?;
     Ok(())
 }
+
+#[tauri::command]
+pub fn notify_vibration() -> AppResult<()> {
+    Ok(())
+}
+
+#[tauri::command]
+pub fn set_foreground_timer(
+    _phase: String,
+    _title: String,
+    _body: String,
+    _ends_at_ms: i64,
+) -> AppResult<()> {
+    Ok(())
+}
+
+#[tauri::command]
+pub fn clear_foreground_timer() -> AppResult<()> {
+    Ok(())
+}

@@ -42,6 +42,9 @@ Frontend wrappers live in `src/lib/ipc.ts`.
 | `get_stats` | none | `StatsSummary` |
 | `notify_system` | `title`, `body` | `void` |
 | `notify_sound` | `soundFile` | `void` (bundled resource under `assets/`; falls back to `ding.wav`) |
+| `notify_vibration` | none | `void` |
+| `set_foreground_timer` | `phase`, `title`, `body`, `endsAtMs` | `void` |
+| `clear_foreground_timer` | none | `void` |
 | `notify_focus_window` | none | `void` |
 | `notify_taskbar_flash` | none | `void` |
 | `export_data` | none | `string` |

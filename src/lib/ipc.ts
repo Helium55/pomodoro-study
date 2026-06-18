@@ -254,6 +254,10 @@ async function memoryInvoke<T>(command: string, args: CommandArgs): Promise<T> {
     case 'reset_data':
       saveMemory({ goals: [], tasks: [], pomodoros: [], interrupts: [], settings: { ...defaults } })
       return undefined as T
+    case 'notify_vibration':
+    case 'set_foreground_timer':
+    case 'clear_foreground_timer':
+      return undefined as T
     default:
       return undefined as T
   }
@@ -349,6 +353,10 @@ export const ipc = {
   getStats: () => call<StatsSummary>('get_stats'),
   notifySystem: (title: string, body: string) => call<void>('notify_system', { title, body }),
   notifySound: (soundFile: string) => call<void>('notify_sound', { soundFile }),
+  notifyVibration: () => call<void>('notify_vibration'),
+  setForegroundTimer: (args: { phase: string; title: string; body: string; endsAtMs: number }) =>
+    call<void>('set_foreground_timer', args),
+  clearForegroundTimer: () => call<void>('clear_foreground_timer'),
   notifyFocusWindow: () => call<void>('notify_focus_window'),
   notifyTaskbarFlash: () => call<void>('notify_taskbar_flash'),
   exportData: () => call<string>('export_data'),
