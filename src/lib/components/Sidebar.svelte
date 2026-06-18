@@ -96,27 +96,38 @@
 
   @media (width <= 760px) {
     .sidebar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 20;
       width: 100%;
       min-width: 0;
       height: auto;
       border-right: 0;
-      border-bottom: 1px solid var(--color-border);
+      border-top: 1px solid var(--color-border);
+      border-bottom: 0;
+      padding-bottom: env(safe-area-inset-bottom);
     }
 
     .brand {
-      min-height: 58px;
+      display: none;
     }
 
     nav {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       padding-top: 0;
     }
 
     a {
       justify-content: center;
-      min-height: 48px;
+      min-height: 64px;
       padding: 0;
+    }
+
+    a[href$='/theme'] {
+      display: none;
     }
 
     a span {
