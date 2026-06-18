@@ -116,7 +116,11 @@ Test on both phone and tablet:
 Last checked: 2026-06-18.
 
 - `corepack pnpm tauri android --help` works and exposes `init`, `dev`, `build`, and `run`.
-- Android project initialization status is recorded after running `corepack pnpm tauri android init`.
+- `where.exe java` finds `C:\Program Files\Eclipse Foundation\jdk-8.0.302.8-hotspot\bin\java.exe`.
+- `where.exe adb` does not find Android Debug Bridge on PATH.
+- Running `corepack pnpm tauri android init` without a Rust PATH fails because `cargo` is not on PATH.
+- Running `corepack pnpm tauri android init` with the bundled Rust PATH reaches Android environment detection, then fails because Android SDK is not found at `C:\Users\31445\AppData\Local\Android\Sdk`.
+- Android project files have not been generated yet. Install Android Studio SDK/NDK or set `ANDROID_HOME` to an existing SDK, then rerun initialization.
 
 ## Troubleshooting
 
