@@ -18,6 +18,8 @@ class TimerStore {
   completeOverlay = $state(false)
 
   startMs = 0
+  phaseStartedAtMs = 0
+  endsAtMs = 0
   pausedMs = 0
   pausedAt = 0
   frame = 0
@@ -43,8 +45,11 @@ class TimerStore {
     this.durationSecs = duration
     this.remainingSecs = duration
     this.startMs = Date.now()
+    this.phaseStartedAtMs = this.startMs
+    this.endsAtMs = this.startMs + duration * 1000
     this.pausedMs = 0
     this.pausedAt = 0
+    await this.syncForegroundTimer()
     this.schedule()
   }
 
@@ -52,14 +57,18 @@ class TimerStore {
     if (this.status !== 'running') return
     this.status = 'paused'
     this.pausedAt = Date.now()
+    void ipc.clearForegroundTimer().catch(() => undefined)
     this.stopLoop()
   }
 
   resume() {
     if (this.status !== 'paused') return
-    this.pausedMs += Date.now() - this.pausedAt
+    const pausedFor = Date.now() - this.pausedAt
+    this.pausedMs += pausedFor
+    this.endsAtMs += pausedFor
     this.pausedAt = 0
     this.status = 'running'
+    void this.syncForegroundTimer()
     this.schedule()
   }
 
@@ -71,11 +80,13 @@ class TimerStore {
     const actual = this.durationSecs - this.remainingSecs
     await ipc.interruptPomodoro(this.currentPomodoro.id, reason, actual, abandoned)
     await tasks.load()
+    await ipc.clearForegroundTimer().catch(() => undefined)
     this.reset()
   }
 
   reset() {
     this.stopLoop()
+    void ipc.clearForegroundTimer().catch(() => undefined)
     this.phase = 'idle'
     this.status = 'idle'
     this.durationSecs = settings.state.workSecs
@@ -83,6 +94,8 @@ class TimerStore {
     this.currentPomodoro = null
     this.completeOverlay = false
     this.startMs = 0
+    this.phaseStartedAtMs = 0
+    this.endsAtMs = 0
     this.pausedMs = 0
     this.pausedAt = 0
   }
@@ -101,8 +114,11 @@ class TimerStore {
 
   tick() {
     if (this.status !== 'running') return
-    const elapsed = Math.floor((Date.now() - this.startMs - this.pausedMs) / 1000)
-    this.remainingSecs = Math.max(0, this.durationSecs - elapsed)
+    const remainingMs =
+      this.endsAtMs > 0
+        ? this.endsAtMs - Date.now()
+        : this.durationSecs * 1000 - (Date.now() - this.startMs - this.pausedMs)
+    this.remainingSecs = Math.max(0, Math.ceil(remainingMs / 1000))
     if (this.remainingSecs <= 0) {
       void this.finishPhase()
       return
@@ -125,6 +141,9 @@ class TimerStore {
       if (settings.state.notifySound) {
         await ipc.notifySound(settings.state.notifySoundFile).catch(() => undefined)
       }
+      if (settings.state.notifyVibration) {
+        await ipc.notifyVibration().catch(() => undefined)
+      }
       if (settings.state.notifyTaskbar) {
         await ipc.notifyTaskbarFlash().catch(() => undefined)
       }
@@ -136,6 +155,7 @@ class TimerStore {
     this.phase = 'idle'
     this.durationSecs = settings.state.workSecs
     this.remainingSecs = settings.state.workSecs
+    await ipc.clearForegroundTimer().catch(() => undefined)
     if (settings.state.autoContinue) {
       await this.startFocus()
     }
@@ -149,9 +169,30 @@ class TimerStore {
     this.durationSecs = isLong ? settings.state.longBreakSecs : settings.state.breakSecs
     this.remainingSecs = this.durationSecs
     this.startMs = Date.now()
+    this.phaseStartedAtMs = this.startMs
+    this.endsAtMs = this.startMs + this.durationSecs * 1000
     this.pausedMs = 0
     this.pausedAt = 0
+    void this.syncForegroundTimer()
     this.schedule()
+  }
+
+  async syncForegroundTimer() {
+    if (!settings.state.notifyForeground || this.status !== 'running' || this.phase === 'idle') {
+      await ipc.clearForegroundTimer().catch(() => undefined)
+      return
+    }
+
+    const copy = getCopy(settings.state.language)
+    const phaseLabel = copy.timer.phase[this.phase]
+    await ipc
+      .setForegroundTimer({
+        phase: this.phase,
+        title: phaseLabel,
+        body: tasks.selected?.title ?? phaseLabel,
+        endsAtMs: this.endsAtMs,
+      })
+      .catch(() => undefined)
   }
 }
 
