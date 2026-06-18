@@ -84,6 +84,8 @@ export interface SettingsState {
   notifySystem: boolean
   notifySound: boolean
   notifySoundFile: string
+  notifyVibration: boolean
+  notifyForeground: boolean
   notifyFullscreen: boolean
   notifyTaskbar: boolean
   theme: string

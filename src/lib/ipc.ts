@@ -22,6 +22,8 @@ const defaults: Record<string, string> = {
   'notify.system': 'true',
   'notify.sound': 'true',
   'notify.sound_file': '"ding.wav"',
+  'notify.vibration': 'true',
+  'notify.foreground': 'true',
   'notify.fullscreen': 'true',
   'notify.taskbar': 'true',
   theme: '"acid"',

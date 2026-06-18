@@ -11,6 +11,8 @@ const DEFAULTS: &[(&str, &str)] = &[
     ("notify.system", "true"),
     ("notify.sound", "true"),
     ("notify.sound_file", "\"ding.wav\""),
+    ("notify.vibration", "true"),
+    ("notify.foreground", "true"),
     ("notify.fullscreen", "true"),
     ("notify.taskbar", "true"),
     ("theme", "\"acid\""),
@@ -39,7 +41,7 @@ mod tests {
             .lock()
             .query_row("SELECT count(*) FROM settings", [], |r| r.get(0))
             .unwrap();
-        assert_eq!(count, 12);
+        assert_eq!(count, 14);
     }
 
     #[test]
@@ -51,7 +53,7 @@ mod tests {
             .lock()
             .query_row("SELECT count(*) FROM settings", [], |r| r.get(0))
             .unwrap();
-        assert_eq!(count, 12);
+        assert_eq!(count, 14);
     }
 
     #[test]
