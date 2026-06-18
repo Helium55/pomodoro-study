@@ -25,4 +25,6 @@ Windows: `%LOCALAPPDATA%\study.pomodoro.app\data.db`
 - [docs/DATA_MODEL.md](docs/DATA_MODEL.md)
 - [docs/THEMING.md](docs/THEMING.md)
 - [docs/IPC_API.md](docs/IPC_API.md)
+- [docs/ANDROID_MOBILE.md](docs/ANDROID_MOBILE.md)
+- [docs/superpowers/specs/2026-06-18-android-mobile-design.md](docs/superpowers/specs/2026-06-18-android-mobile-design.md)
 - [docs/AGENT_GUIDE.md](docs/AGENT_GUIDE.md)

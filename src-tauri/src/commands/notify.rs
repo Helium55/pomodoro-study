@@ -3,7 +3,9 @@ use rodio::{Decoder, OutputStream, Sink};
 use std::fs::File;
 use std::io::BufReader;
 use std::path::{Path, PathBuf};
-use tauri::{path::BaseDirectory, AppHandle, Manager, UserAttentionType, Window};
+use tauri::{path::BaseDirectory, AppHandle, Manager, Window};
+#[cfg(not(target_os = "android"))]
+use tauri::UserAttentionType;
 
 const DEFAULT_SOUND_FILE: &str = "ding.wav";
 
@@ -69,10 +71,17 @@ pub fn notify_focus_window(window: Window) -> AppResult<()> {
 }
 
 #[tauri::command]
+#[cfg(not(target_os = "android"))]
 pub fn notify_taskbar_flash(window: Window) -> AppResult<()> {
     window
         .request_user_attention(Some(UserAttentionType::Informational))
         .map_err(|err| AppError::Other(err.to_string()))?;
+    Ok(())
+}
+
+#[tauri::command]
+#[cfg(target_os = "android")]
+pub fn notify_taskbar_flash(_window: Window) -> AppResult<()> {
     Ok(())
 }
 

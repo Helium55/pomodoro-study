@@ -1,7 +1,7 @@
 # Pomodoro Study Android Mobile Design
 
 **Date:** 2026-06-18  
-**Status:** Approved design for Android planning  
+**Status:** Implemented baseline for Android v0.2.0
 **Project root:** `C:\Users\31445\Documents\pomodoro-study`
 
 ## 1. Goal

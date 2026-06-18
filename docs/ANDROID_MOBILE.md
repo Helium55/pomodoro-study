@@ -61,6 +61,17 @@ Build Android release artifacts:
 corepack pnpm tauri android build
 ```
 
+The tracked Android project lives under `src-tauri/gen/android`. Generated build outputs, copied native libraries, generated Tauri Android properties, signing files, and local APK outputs stay out of git.
+
+When manually building the Android Rust library outside the Tauri CLI, include the production custom protocol feature:
+
+```powershell
+corepack pnpm build
+cargo build --target aarch64-linux-android --release --features tauri/custom-protocol
+```
+
+Without `tauri/custom-protocol`, an installed release APK can try to load the development server at `http://localhost:1420/` and show a blank or error page.
+
 ## Signing
 
 Keep signing material out of git. Do not commit keystores, local signing properties, or signing passwords.
@@ -115,12 +126,11 @@ Test on both phone and tablet:
 
 Last checked: 2026-06-18.
 
-- `corepack pnpm tauri android --help` works and exposes `init`, `dev`, `build`, and `run`.
-- `where.exe java` finds `C:\Program Files\Eclipse Foundation\jdk-8.0.302.8-hotspot\bin\java.exe`.
-- `where.exe adb` does not find Android Debug Bridge on PATH.
-- Running `corepack pnpm tauri android init` without a Rust PATH fails because `cargo` is not on PATH.
-- Running `corepack pnpm tauri android init` with the bundled Rust PATH reaches Android environment detection, then fails because Android SDK is not found at `C:\Users\31445\AppData\Local\Android\Sdk`.
-- Android project files have not been generated yet. Install Android Studio SDK/NDK or set `ANDROID_HOME` to an existing SDK, then rerun initialization.
+- Android project files have been generated under `src-tauri/gen/android`.
+- Release APK verification used Android SDK `C:\Users\31445\AppData\Local\Android\Sdk`, NDK `27.0.12077973`, and JDK 17 from `C:\Users\31445\Documents\android-build-tools\jdk-17\jdk-17.0.19+10`.
+- The verified test device was Lenovo `TB710FU`, Android 16 / SDK 36, `arm64-v8a`.
+- The fixed Android APK links `libc++_shared.so` and uses packaged Tauri custom protocol assets in release mode.
+- Local test signing uses a debug-style test key only. Use a production keystore before a public store release.
 
 ## Troubleshooting
 
