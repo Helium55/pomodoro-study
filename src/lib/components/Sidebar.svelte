@@ -94,7 +94,7 @@
     color: var(--color-bg);
   }
 
-  @media (width <= 760px) {
+  @media (width <= 760px), (orientation: landscape) and (width <= 900px) and (height <= 560px) {
     .sidebar {
       position: fixed;
       left: 0;

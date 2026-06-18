@@ -54,4 +54,16 @@
     font-weight: 900;
     line-height: 0.9;
   }
+
+  @media (orientation: landscape) and (width <= 900px) and (height <= 560px) {
+    .timer {
+      gap: 7px;
+      min-width: min(460px, 100%);
+      padding: 18px clamp(14px, 3vw, 28px);
+    }
+
+    .digits {
+      font-size: clamp(54px, 11vw, 92px);
+    }
+  }
 </style>

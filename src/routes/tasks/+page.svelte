@@ -167,6 +167,7 @@
   input,
   select {
     min-width: 0;
+    min-height: 44px;
     border: 0;
     border-right: 1px solid var(--color-border);
     border-bottom: 1px solid var(--color-border);
@@ -177,6 +178,7 @@
   }
 
   button {
+    min-height: 44px;
     border: 0;
     background: var(--color-accent);
     color: var(--color-bg);
@@ -195,6 +197,25 @@
     .columns,
     .task-form {
       grid-template-columns: 1fr;
+    }
+  }
+
+  @media (width <= 760px) {
+    .page-head {
+      padding: 18px 16px;
+    }
+
+    .columns {
+      min-height: auto;
+    }
+
+    .pane {
+      border-right: 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .form {
+      gap: 0;
     }
   }
 </style>

@@ -57,10 +57,17 @@
     overflow: auto;
   }
 
-  @media (width <= 760px) {
+  @media (width <= 760px), (orientation: landscape) and (width <= 900px) and (height <= 560px) {
     .content {
       height: 100dvh;
       padding-bottom: calc(64px + env(safe-area-inset-bottom));
+    }
+  }
+
+  @media (orientation: landscape) and (width <= 900px) and (height <= 560px) {
+    .content {
+      height: calc(100dvh - 64px);
+      padding-bottom: env(safe-area-inset-bottom);
     }
   }
 </style>

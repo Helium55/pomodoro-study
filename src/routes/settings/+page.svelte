@@ -195,6 +195,25 @@
       />
       {copy.settings.taskbarFlash}
     </label>
+    <label class="check">
+      <input
+        type="checkbox"
+        checked={settings.state.notifyVibration}
+        onchange={(event) =>
+          settings.update('notifyVibration', (event.target as HTMLInputElement).checked)}
+      />
+      {copy.settings.vibration}
+    </label>
+    <label class="check">
+      <input
+        type="checkbox"
+        checked={settings.state.notifyForeground}
+        onchange={(event) =>
+          settings.update('notifyForeground', (event.target as HTMLInputElement).checked)}
+      />
+      {copy.settings.foregroundNotification}
+    </label>
+    <p class="android-guidance">{copy.settings.androidGuidance}</p>
   </section>
 
   <section class="section actions">
@@ -343,9 +362,23 @@
     color: var(--color-accent);
   }
 
+  .android-guidance {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: var(--color-fg-muted);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+
   @media (width <= 760px) {
+    .page-head {
+      padding: 18px 16px;
+    }
+
     .section {
       grid-template-columns: 1fr;
+      padding: 16px;
     }
   }
 </style>

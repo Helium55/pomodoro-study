@@ -252,14 +252,95 @@
   }
 
   @media (width <= 760px) {
+    .focus-page {
+      grid-template-rows: auto auto minmax(260px, 1fr) auto auto;
+    }
+
+    .top {
+      padding: 16px;
+    }
+
     .taskbar,
     .metrics {
       grid-template-columns: 1fr;
       gap: 8px;
     }
 
+    .timer-wrap {
+      padding: 28px 14px;
+    }
+
     .controls {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .controls .primary {
+      grid-column: 1 / -1;
+    }
+
+    .controls button {
+      min-height: 56px;
+      border-bottom: 1px solid var(--color-border);
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+
+    .metrics div {
+      padding: 12px 16px;
+    }
+  }
+
+  @media (orientation: landscape) and (width <= 900px) and (height <= 560px) {
+    .focus-page {
+      grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+      grid-template-rows: auto auto 1fr;
+      min-height: 100%;
+    }
+
+    .top {
+      grid-column: 1 / -1;
+      padding: 8px 14px;
+    }
+
+    h1 {
+      font-size: 30px;
+    }
+
+    .session {
+      min-width: 96px;
+      padding: 6px;
+    }
+
+    .session strong {
+      font-size: 28px;
+    }
+
+    .taskbar {
+      grid-column: 2;
+      grid-row: 2;
+      border-left: 1px solid var(--color-border);
+      padding: 10px 12px;
+    }
+
+    .timer-wrap {
+      grid-column: 1;
+      grid-row: 2 / 4;
+      padding: 14px;
+    }
+
+    .controls {
+      grid-column: 2;
+      grid-row: 3;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      border-left: 1px solid var(--color-border);
+    }
+
+    .controls button {
+      min-height: 44px;
+    }
+
+    .metrics {
+      display: none;
     }
   }
 </style>

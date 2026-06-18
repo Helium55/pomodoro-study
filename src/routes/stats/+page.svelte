@@ -153,6 +153,11 @@
     font-size: 12px;
   }
 
+  .bar-row > *,
+  .line > * {
+    min-width: 0;
+  }
+
   .line {
     grid-template-columns: minmax(0, 1fr) auto;
   }
@@ -164,9 +169,23 @@
   }
 
   @media (width <= 760px) {
+    .page-head {
+      padding: 18px 16px;
+    }
+
     .cards,
     .grid {
       grid-template-columns: 1fr;
+    }
+
+    .cards div,
+    .panel {
+      padding: 16px;
+    }
+
+    .bar-row {
+      grid-template-columns: 58px minmax(0, 1fr) auto;
+      gap: 10px;
     }
   }
 </style>

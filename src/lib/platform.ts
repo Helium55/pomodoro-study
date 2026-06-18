@@ -17,10 +17,11 @@ export interface PlatformProfile {
 
 export function getPlatformProfile(input: PlatformInput): PlatformProfile {
   const isAndroid = /Android/i.test(input.userAgent)
+  const isPhoneUa = /Mobile/i.test(input.userAgent)
   const isTauri = input.hasTauriInternals
   const os: PlatformOs = isAndroid ? 'android' : isTauri ? 'desktop' : 'browser'
   const formFactor: FormFactor = isAndroid
-    ? input.width >= 840
+    ? !isPhoneUa && input.width >= 840
       ? 'tablet'
       : 'phone'
     : 'desktop'

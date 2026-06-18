@@ -26,6 +26,18 @@ describe('getPlatformProfile', () => {
     expect(profile.isMobileLayout).toBe(false)
   })
 
+  it('keeps Android phones as phones in landscape when the user agent says mobile', () => {
+    const profile = getPlatformProfile({
+      userAgent: 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Mobile',
+      width: 844,
+      hasTauriInternals: true,
+    })
+
+    expect(profile.os).toBe('android')
+    expect(profile.formFactor).toBe('phone')
+    expect(profile.isMobileLayout).toBe(true)
+  })
+
   it('keeps desktop as desktop', () => {
     const profile = getPlatformProfile({
       userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
