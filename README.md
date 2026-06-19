@@ -27,4 +27,5 @@ Windows: `%LOCALAPPDATA%\study.pomodoro.app\data.db`
 - [docs/IPC_API.md](docs/IPC_API.md)
 - [docs/ANDROID_MOBILE.md](docs/ANDROID_MOBILE.md)
 - [docs/superpowers/specs/2026-06-18-android-mobile-design.md](docs/superpowers/specs/2026-06-18-android-mobile-design.md)
+- [docs/superpowers/specs/2026-06-19-motion-design.md](docs/superpowers/specs/2026-06-19-motion-design.md)
 - [docs/AGENT_GUIDE.md](docs/AGENT_GUIDE.md)
